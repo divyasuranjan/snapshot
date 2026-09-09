@@ -7,6 +7,6 @@ images:
 - name: ghcr.io/divyasuranjan/snapshot-analytics-worker
   newTag: aa05d299a05018247d510b44b5cc35727f69f734
 - name: ghcr.io/divyasuranjan/snapshot-dashboard
-  newTag: aa05d299a05018247d510b44b5cc35727f69f734
+  newTag: e0f0594250df79cb01dc09eb52c5b860e97e0e8c
 - name: ghcr.io/divyasuranjan/snapshot-shortlink-api
   newTag: aa05d299a05018247d510b44b5cc35727f69f734
