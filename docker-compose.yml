@@ -1,0 +1,95 @@
+name: snapshot
+
+services:
+  postgres:
+    # Postgres + both services' migrations baked in at build time -- see
+    # docker/postgres-init/Dockerfile for why this isn't a bind-mounted
+    # volume. Runs each .sql file once, in alphabetical order, only against
+    # a first-time (empty) data volume.
+    build:
+      context: .
+      dockerfile: docker/postgres-init/Dockerfile
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: snapshot
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  shortlink-api:
+    build: ./services/shortlink-api
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL: postgres://postgres@postgres:5432/snapshot?sslmode=disable
+      REDIS_ADDR: redis:6379
+      PORT: "8080"
+      BASE_URL: http://localhost:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      # No shell/wget/curl in the distroless image -- the binary checks
+      # itself instead. See main.go's "healthcheck" subcommand.
+      test: ["CMD", "/shortlink-api", "healthcheck"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  analytics-worker:
+    build: ./services/analytics-worker
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgres://postgres@postgres:5432/snapshot?sslmode=disable
+      REDIS_ADDR: redis:6379
+      PORT: "8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  dashboard:
+    build: ./services/dashboard
+    ports:
+      # Host port 3001, not 3000: this project also runs Grafana (phase 6),
+      # which conventionally claims 3000, and it's not unusual for it to
+      # already be running locally.
+      - "3001:3000"
+    environment:
+      ANALYTICS_WORKER_URL: http://analytics-worker:8000
+      SHORTLINK_API_URL: http://shortlink-api:8080
+      DEMO_MODE: "false"
+    depends_on:
+      analytics-worker:
+        condition: service_healthy
+      shortlink-api:
+        condition: service_healthy
+
+volumes:
+  postgres_data:

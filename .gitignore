@@ -1,0 +1,24 @@
+# Go
+services/shortlink-api/shortlink-api
+*.test
+*.out
+
+# Python
+services/analytics-worker/__pycache__/
+services/analytics-worker/.venv/
+services/analytics-worker/*.egg-info/
+services/analytics-worker/.pytest_cache/
+*.pyc
+
+# Node / Next.js
+services/dashboard/node_modules/
+services/dashboard/.next/
+services/dashboard/out/
+
+# Local env files
+.env
+.env.local
+*.env
+
+# OS
+.DS_Store
