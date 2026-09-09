@@ -4,7 +4,7 @@
 # it. Trade-off: asyncpg/uvloop have no musl wheels on PyPI, so the builder
 # stage compiles them from source -- gcc/musl-dev/postgresql-dev stay out of
 # the final image since only the compiled /venv is copied forward.
-FROM python:3.12-alpine AS builder
+FROM python:3.14-alpine AS builder
 WORKDIR /src
 
 RUN apk add --no-cache gcc musl-dev postgresql-dev
@@ -15,7 +15,7 @@ ENV PATH="/venv/bin:$PATH"
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-FROM python:3.12-alpine
+FROM python:3.14-alpine
 # The base image tag's package index lags behind Alpine's own security
 # repo; patched packages (e.g. libuuid) are already available upstream
 # even when the base image was built before they landed.
