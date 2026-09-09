@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shortlink-api
+  labels:
+    app: shortlink-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shortlink-api
+  template:
+    metadata:
+      labels:
+        app: shortlink-api
+    spec:
+      containers:
+        - name: shortlink-api
+          image: ghcr.io/divyasuranjan/snapshot-shortlink-api:latest
+          ports:
+            - name: http
+              containerPort: 8080
+          env:
+            - name: PORT
+              value: "8080"
+            - name: REDIS_ADDR
+              value: redis:6379
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: snapshot-secrets
+                  key: shortlink-database-url
+            - name: BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: snapshot-config
+                  key: base-url

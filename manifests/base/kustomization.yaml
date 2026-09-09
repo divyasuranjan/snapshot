@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Postgres, Redis, and their Secrets/ConfigMap land here in the
+# observability/Helm phase, alongside resource limits and health probes on
+# these three -- this base currently has just enough to prove the image
+# build -> scan -> push -> GitOps-bump pipeline end to end.
+resources:
+  - shortlink-api
+  - analytics-worker
+  - dashboard

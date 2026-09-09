@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+  labels:
+    app: dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashboard
+  template:
+    metadata:
+      labels:
+        app: dashboard
+    spec:
+      containers:
+        - name: dashboard
+          image: ghcr.io/divyasuranjan/snapshot-dashboard:latest
+          ports:
+            - name: http
+              containerPort: 3000
+          env:
+            - name: PORT
+              value: "3000"
+            - name: ANALYTICS_WORKER_URL
+              value: http://analytics-worker:8000
+            - name: SHORTLINK_API_URL
+              value: http://shortlink-api:8080
+            - name: DEMO_MODE
+              valueFrom:
+                configMapKeyRef:
+                  name: snapshot-config
+                  key: demo-mode
