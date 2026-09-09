@@ -1,0 +1,98 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f8f8fc;
+  --surface: #ffffff;
+  --surface-2: #f1f1f8;
+  --border: #e4e4ec;
+  --border-strong: #d3d3e0;
+
+  --text-primary: #16161f;
+  --text-secondary: #6b6b7b;
+  --text-muted: #9797a8;
+
+  --accent: #5046e5;
+  --accent-hover: #4338ca;
+  --accent-subtle: #eef0ff;
+  --accent-on-subtle: #4338ca;
+
+  --danger: #dc2626;
+  --danger-subtle: #fef2f2;
+  --danger-on-subtle: #b91c1c;
+
+  --chart-1: #5046e5;
+  --chart-2: #0d9488;
+  --chart-3: #d97706;
+  --chart-4: #e11d48;
+  --chart-5: #0284c7;
+
+  --shadow-card: 0 1px 2px 0 rgb(22 22 31 / 0.04);
+}
+
+.dark {
+  --background: #0b0b12;
+  --surface: #15151f;
+  --surface-2: #1b1b29;
+  --border: #262633;
+  --border-strong: #34344a;
+
+  --text-primary: #f2f2f7;
+  --text-secondary: #9494a8;
+  --text-muted: #6e6e82;
+
+  --accent: #7c7aff;
+  --accent-hover: #9391ff;
+  --accent-subtle: #201f3a;
+  --accent-on-subtle: #b3b0ff;
+
+  --danger: #f87171;
+  --danger-subtle: #2a1616;
+  --danger-on-subtle: #fca5a5;
+
+  --chart-1: #7c7aff;
+  --chart-2: #2dd4bf;
+  --chart-3: #fbbf24;
+  --chart-4: #fb7185;
+  --chart-5: #38bdf8;
+
+  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-muted: var(--text-muted);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-subtle: var(--accent-subtle);
+  --color-accent-on-subtle: var(--accent-on-subtle);
+
+  --color-danger: var(--danger);
+  --color-danger-subtle: var(--danger-subtle);
+  --color-danger-on-subtle: var(--danger-on-subtle);
+
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--text-primary);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  border-color: var(--border);
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
