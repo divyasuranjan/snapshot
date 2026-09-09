@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+
+    scrape_configs:
+      - job_name: shortlink-api
+        static_configs:
+          - targets: ["shortlink-api:8080"]
+      - job_name: analytics-worker
+        static_configs:
+          - targets: ["analytics-worker:8000"]

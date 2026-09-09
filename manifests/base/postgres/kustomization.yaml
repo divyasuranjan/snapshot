@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - deployment.yaml
+  - service.yaml
+  - pvc.yaml
+# Mounted into /docker-entrypoint-initdb.d (see deployment.yaml), so
+# Postgres runs these once against a fresh volume -- same mechanism as
+# docker-compose's local dev setup, just via a ConfigMap instead of a bind
+# mount.
+#
+# sql/ is a copy of each service's own migrations/0001_*.up.sql, not a
+# symlink or cross-tree reference: Kustomize's generator refuses to read
+# files outside the directory a kustomization.yaml lives in (a deliberate
+# guardrail against a kustomization reaching arbitrary filesystem paths),
+# so reaching into services/*/migrations from here isn't an option without
+# disabling that check globally. Keep sql/ in sync if either service adds
+# a migration.
+configMapGenerator:
+  - name: postgres-init-sql
+    files:
+      - sql/01_links.sql
+      - sql/02_click_events.sql

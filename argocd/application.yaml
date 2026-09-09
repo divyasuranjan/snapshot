@@ -1,0 +1,28 @@
+# Applied once, manually, to bootstrap: `kubectl apply -f argocd/application.yaml`
+# against the cluster Argo CD itself runs in. From then on Argo CD owns
+# everything under manifests/overlays/production -- this file is the one
+# piece of the deployment you apply by hand.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: snapshot
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/divyasuranjan/snapshot.git
+    targetRevision: main
+    path: manifests/overlays/production
+  destination:
+    # In-cluster: assumes Argo CD runs on the same k3s cluster it's
+    # deploying to, which is the common single-cluster setup. Point this
+    # at a registered external cluster's API server URL instead if Argo CD
+    # manages this from elsewhere.
+    server: https://kubernetes.default.svc
+    namespace: snapshot
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
