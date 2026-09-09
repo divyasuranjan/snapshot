@@ -23,6 +23,16 @@ spec:
           env:
             - name: PORT
               value: "3000"
+            # Kubernetes auto-injects HOSTNAME as the pod's name (e.g.
+            # "dashboard-65c4b7ffc4-dj2zg"). Next.js's standalone
+            # server.js binds to whatever HOSTNAME says instead of all
+            # interfaces, so without this override it only accepts
+            # connections addressed to the pod's own IP -- the readiness
+            # probe (which hits the pod IP directly) passes, but anything
+            # going through the Service or a port-forward (loopback
+            # inside the pod netns) gets connection refused.
+            - name: HOSTNAME
+              value: "0.0.0.0"
             - name: ANALYTICS_WORKER_URL
               value: http://analytics-worker:8000
             - name: SHORTLINK_API_URL
