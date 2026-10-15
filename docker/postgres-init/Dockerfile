@@ -7,7 +7,7 @@
 # host-path translation on macOS cannot bind-mount a path containing a
 # literal ":" -- which this project's checkout path does. COPY (a build-time
 # operation) isn't affected, since it doesn't go through that translation.
-FROM postgres:16-alpine
+FROM postgres:18-alpine
 
 COPY services/shortlink-api/migrations/0001_init_links.up.sql /docker-entrypoint-initdb.d/01_links.sql
 COPY services/analytics-worker/migrations/0001_init_click_events.up.sql /docker-entrypoint-initdb.d/02_click_events.sql
