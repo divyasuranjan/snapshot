@@ -5,4 +5,4 @@ asyncpg==0.31.0
 redis==6.2.0
 httpx==0.28.1
 user-agents==2.2.0
-prometheus-client==0.22.1
+prometheus-client==0.26.0
